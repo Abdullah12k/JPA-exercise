@@ -6,6 +6,7 @@ import com.example.jpaexercise.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,13 +22,19 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addUser(@RequestBody @Valid User user) {
+    public ResponseEntity<?> addUser(@RequestBody @Valid User user, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         userService.addUser(user);
         return ResponseEntity.status(200).body(new ApiResponse("User added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody @Valid User user) {
+    public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody @Valid User user, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         Boolean updated = userService.updateUser(id, user);
         if (!updated) {
             return ResponseEntity.status(400).body(new ApiResponse("User not found"));
