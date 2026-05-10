@@ -21,20 +21,25 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addCategory(@RequestBody @Valid Category category) {
+    public ResponseEntity<?> addCategory(@RequestBody @Valid Category category, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         categoryService.addCategory(category);
         return ResponseEntity.status(200).body(new ApiResponse("Category added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateCategory(@PathVariable Integer id, @RequestBody @Valid Category category) {
+    public ResponseEntity<?> updateCategory(@PathVariable Integer id, @RequestBody @Valid Category category, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         Boolean updated = categoryService.updateCategory(id, category);
         if (!updated) {
             return ResponseEntity.status(400).body(new ApiResponse("Category not found"));
         }
         return ResponseEntity.status(200).body(new ApiResponse("Category updated successfully"));
     }
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Integer id) {
         Boolean deleted = categoryService.deleteCategory(id);
