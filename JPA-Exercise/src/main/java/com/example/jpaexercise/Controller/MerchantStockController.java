@@ -22,13 +22,19 @@ public class MerchantStockController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addMerchantStock(@RequestBody @Valid MerchantStock merchantStock) {
+    public ResponseEntity<?> addMerchantStock(@RequestBody @Valid MerchantStock merchantStock, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         merchantStockService.addMerchantStock(merchantStock);
         return ResponseEntity.status(200).body(new ApiResponse("Merchant stock added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateMerchantStock(@PathVariable Integer id, @RequestBody @Valid MerchantStock merchantStock) {
+    public ResponseEntity<?> updateMerchantStock(@PathVariable Integer id, @RequestBody @Valid MerchantStock merchantStock, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         Boolean updated = merchantStockService.updateMerchantStock(id, merchantStock);
         if (!updated) {
             return ResponseEntity.status(400).body(new ApiResponse("Merchant stock not found"));
