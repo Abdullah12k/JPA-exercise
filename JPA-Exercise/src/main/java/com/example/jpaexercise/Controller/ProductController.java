@@ -23,13 +23,19 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addProduct(@RequestBody @Valid Product product) {
+    public ResponseEntity<?> addProduct(@RequestBody @Valid Product product, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         productService.addProduct(product);
         return ResponseEntity.status(200).body(new ApiResponse("Product added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody @Valid Product product) {
+    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody @Valid Product product, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         Boolean updated = productService.updateProduct(id, product);
         if (!updated) {
             return ResponseEntity.status(400).body(new ApiResponse("Product not found"));
