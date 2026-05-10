@@ -21,13 +21,19 @@ public class MerchantController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addMerchant(@RequestBody @Valid Merchant merchant) {
+    public ResponseEntity<?> addMerchant(@RequestBody @Valid Merchant merchant, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         merchantService.addMerchant(merchant);
         return ResponseEntity.status(200).body(new ApiResponse("Merchant added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateMerchant(@PathVariable Integer id, @RequestBody @Valid Merchant merchant) {
+    public ResponseEntity<?> updateMerchant(@PathVariable Integer id, @RequestBody @Valid Merchant merchant, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         Boolean updated = merchantService.updateMerchant(id, merchant);
         if (!updated) {
             return ResponseEntity.status(400).body(new ApiResponse("Merchant not found"));
