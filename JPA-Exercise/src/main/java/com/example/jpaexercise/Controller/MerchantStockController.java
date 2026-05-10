@@ -46,7 +46,7 @@ public class MerchantStockController {
     }
 
     @PutMapping("/add-stock/{productId}/{merchantId}/{amount}")
-    public ResponseEntity<ApiResponse> addStock(@PathVariable Integer productId, @PathVariable Integer merchantId, @PathVariable int amount) {
+    public ResponseEntity<?> addStock(@PathVariable Integer productId, @PathVariable Integer merchantId, @PathVariable int amount) {
         Boolean result = merchantStockService.addStock(productId, merchantId, amount);
         if (!result) {
             return ResponseEntity.status(400).body(new ApiResponse("No stock found for given product and merchant"));
